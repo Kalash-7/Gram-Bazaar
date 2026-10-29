@@ -1,0 +1,26 @@
+# Environment & Secrets (NEVER commit your Gemini API Key)
+.env
+.env.local
+*.env
+
+# Python build & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# IDE configurations
+.vscode/
+.idea/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gram Bazaar</title>
+  <meta name="description"
+    content="Low-connectivity, multilingual PWA connecting smallholder farmers in Lucknow with urban wholesale buyers through micro-yield aggregation and Rural Saathi facilitators.">
+  <meta name="theme-color" content="#15803d">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icon-192.png">
+  <!-- Modern Clean Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (registrations) {
+        for (var r of registrations) {
+          r.unregister();
+        }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function (names) {
+        for (var name of names) {
+          caches.delete(name);
+        }
+      });
+    }
+  </script>
+  <link rel="stylesheet" href="style.css?v=7.2">
+</head>
+
+<body>
+
+  <!-- ============================================================
+       TOP HEADER & NAVIGATION BAR
+  ============================================================ -->
+  <header class="header-wrapper" role="banner">
+    <div class="top-bar">
+      <!-- Brand & Pilot Info -->
+      <div class="brand-section" style="cursor:pointer;" onclick="window.gramBazaar.navigateTo('tab-home')"
+        title="Click to go to Home Dashboard">
+        <div class="brand-icon" aria-hidden="true">🌾</div>
+        <div class="brand-title-wrap">
+          <h1 id="brand-title">
+            <span data-i18n="brand_name">Gram Bazaar</span>
+            <span class="brand-badge" id="cluster-tag" data-i18n="lucknow_pilot">Lucknow Pilot</span>
+          </h1>
+          <p class="brand-subtitle" id="brand-tagline" data-i18n="brand_tagline">
+            Micro-Yield Aggregation & Fair Trade Agricultural Platform
+          </p>
+        </div>
+      </div>
+
+      <!-- Controls: Network Simulator, Language Toggle, Demo Reset -->
+      <div class="top-controls">
+        <!-- Live Offline Network Simulator for Demo -->
+        <button id="net-toggle-btn" class="net-toggle-btn" title="Toggle Network Connectivity Mode for Demo">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="net-status-text" data-i18n="net_online">Live Online</span>
+        </button>
+
+        <!-- Bilingual Language Switcher -->
+        <button id="lang-toggle-btn" class="lang-btn" title="Switch Language">
+          <span id="current-lang-text">🌐 हिंदी</span>
+        </button>
+
+        <!-- Reset Demo Data to Clean State -->
+        <button id="reset-demo-btn" class="reset-btn" title="Reset Demo Data to Initial State">
+          ↺ <span data-i18n="reset_btn">Reset Demo Data</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Offline Sync Notification Banner (Appears only when items are queued or simulated offline) -->
+  <div id="offline-sync-banner" class="offline-sync-banner">
+    <span>⚠️ <strong data-i18n="offline_mode_active">Offline Mode Active:</strong> <span
+        id="offline-queue-count">0</span> <span data-i18n="offline_items_queued">requests queued on
+        device.</span></span>
+    <button id="sync-now-btn" class="sync-now-btn" data-i18n="sync_now_btn">Sync with Server</button>
+  </div>
+
+  <!-- ============================================================
+       MAIN CONTENT CONTAINER
+  ============================================================ -->
+  <main class="main-content" role="main">
+
+    <!-- ==========================================================
+         CLEAN HOME DASHBOARD: GRAM BAZAAR, DISCLAIMER & 4 ROLE CARDS
+    =========================================================== -->
+    <section id="tab-home" class="tab-pane active" aria-labelledby="home-main-title">
+      <div class="home-hero-card">
+
+        <!-- Clean Home Title & Welcome Header -->
+        <div class="home-hero-header">
+          <h1 class="home-hero-title" id="home-main-title" data-i18n="home_main_title">
+            Gram Bazaar
+          </h1>
+          <p class="home-hero-desc" data-i18n="home_welcome_desc">
+            Direct farmer-to-buyer trade powered by micro-yield pooling &amp; 0% commission.
+          </p>
+        </div>
+
+        <!-- Prominent Hypothetical Data Notice Box -->
+        <div class="hypothetical-notice-box" role="note">
+          <span style="font-size:1.8rem; line-height:1;">⚠️</span>
+          <div>
+            <strong data-i18n="notice_bold">Hypothetical Data Disclaimer:</strong>
+            <span data-i18n="notice_body">
+              All 12 smallholder farmers, 4 Rural Saathis, crop market rates, vehicle registration (UP 32 BN 8412), and
+              cryptographic SHA-256 receipts displayed are simulated demonstration data for the Lucknow Agri-Cluster
+              pilot (Mohanlalganj, Malihabad, Bakshi Ka Talab, Kakori, Gosainganj). In production, this integrates
+              directly with state Mandi councils and Self-Help Group (SHG) networks.
+            </span>
+          </div>
+        </div>
+
+        <!-- 4 Primary Role Cards Grid -->
+        <div class="home-role-cards-grid">
+
+          <!-- Card 1: Farmer -->
+          <div class="role-card farmer" onclick="window.gramBazaar.navigateTo('tab-farmer')" role="button" tabindex="0">
+            <div>
+              <div class="role-card-header">
+                <div class="role-card-icon">👨‍🌾</div>
+              </div>
+              <h3 class="role-card-title" data-i18n="card_farmer_title">Farmer</h3>
+              <div class="role-card-subtitle" data-i18n="card_farmer_sub">Voice & Chat Harvest Assistant</div>
+              <p class="role-card-desc" data-i18n="card_farmer_desc">
+                List your harvest via voice or chat. Local units translated automatically with 0% commission.
+              </p>
+            </div>
+            <button type="button" class="role-action-btn">
+              <span data-i18n="btn_enter_farmer">Enter Farmer Portal ➔</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+          <!-- Card 2: Admin / Rural Saathi -->
+          <div class="role-card saathi" onclick="window.gramBazaar.navigateTo('tab-saathi')" role="button" tabindex="0">
+            <div>
+              <div class="role-card-header">
+                <div class="role-card-icon">🤝</div>
+              </div>
+              <h3 class="role-card-title" data-i18n="card_saathi_title">Admin / Rural Saathi</h3>
+              <div class="role-card-subtitle" data-i18n="card_saathi_sub">Community Facilitator Hub</div>
+              <p class="role-card-desc" data-i18n="card_saathi_desc">
+                Onboard smartphone-less farmers with 2-step SMS OTP consent &amp; earn 1.5% facilitation incentive.
+              </p>
+            </div>
+            <button type="button" class="role-action-btn">
+              <span data-i18n="btn_enter_saathi">Enter Saathi Portal ➔</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+          <!-- Card 3: Wholesale Buyer -->
+          <div class="role-card buyer" onclick="window.gramBazaar.navigateTo('tab-buyer')" role="button" tabindex="0">
+            <div>
+              <div class="role-card-header">
+                <div class="role-card-icon">🛒</div>
+              </div>
+              <h3 class="role-card-title" data-i18n="card_buyer_title">Wholesale Buyer</h3>
+              <div class="role-card-subtitle" data-i18n="card_buyer_sub">Bulk Demand & Matching Engine</div>
+              <p class="role-card-desc" data-i18n="card_buyer_desc">
+                Procure bulk produce pooled dynamically from smallholder harvests across Lucknow clusters.
+              </p>
+            </div>
+            <button type="button" class="role-action-btn">
+              <span data-i18n="btn_enter_buyer">Enter Buyer Portal ➔</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+          <!-- Card 4: Transporter & Logistics -->
+          <div class="role-card transporter" onclick="window.gramBazaar.navigateTo('tab-logistics')" role="button"
+            tabindex="0">
+            <div>
+              <div class="role-card-header">
+                <div class="role-card-icon">🚚</div>
+              </div>
+              <h3 class="role-card-title" data-i18n="card_transporter_title">Transporter & Logistics</h3>
+              <div class="role-card-subtitle" data-i18n="card_transporter_sub">Shared Routes & Immutable Ledger</div>
+              <p class="role-card-desc" data-i18n="card_transporter_desc">
+                Shared mini-truck routes saving ~60% freight cost with SHA-256 cryptographic audit receipts.
+              </p>
+            </div>
+            <button type="button" class="role-action-btn">
+              <span data-i18n="btn_enter_transporter">Enter Transporter Portal ➔</span>
+              <span>➔</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Pilot Metrics Section (Cleanly integrated on Home page) -->
+        <div style="margin-top:36px;">
+          <h4
+            style="font-size:1.0rem; font-weight:800; color:#0f2915; margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <span data-i18n="live_pilot_stats_title">📊 Lucknow Pilot Live Statistics</span>
+            <span class="hypothetical-badge-sm" data-i18n="live_sim_badge">⚠️ Simulated Live Data</span>
+          </h4>
+          <div class="kpi-grid">
+            <!-- Active Farmers -->
+            <div class="kpi-card" id="kpi-farmers-card">
+              <div class="kpi-icon farmers" aria-hidden="true">👨‍🌾</div>
+              <div class="kpi-info">
+                <span class="kpi-value" id="kpi-active-farmers">12</span>
+                <span class="kpi-label" data-i18n="kpi_farmers">Active Farmers</span>
+                <span class="kpi-badge" data-i18n="kpi_farmers_sub">5 Lucknow Clusters</span>
+              </div>
+            </div>
+
+            <!-- Available Volume (kg) -->
+            <div class="kpi-card" id="kpi-volume-card">
+              <div class="kpi-icon volume" aria-hidden="true">⚖️</div>
+              <div class="kpi-info">
+                <span class="kpi-value" id="kpi-volume">2,820 <small style="font-size:0.8rem">kg</small></span>
+                <span class="kpi-label" data-i18n="kpi_volume">Available Produce Volume</span>
+                <span class="kpi-badge" data-i18n="kpi_volume_sub">Potato, Tomato, Onion, Wheat</span>
+              </div>
+            </div>
+
+            <!-- Fulfilled Orders -->
+            <div class="kpi-card" id="kpi-orders-card">
+              <div class="kpi-icon orders" aria-hidden="true">📦</div>
+              <div class="kpi-info">
+                <span class="kpi-value" id="kpi-fulfilled-orders">2</span>
+                <span class="kpi-label" data-i18n="kpi_orders">Consolidated Orders Fulfilled</span>
+                <span class="kpi-badge" data-i18n="kpi_orders_sub">Shared Mini-Truck Routes</span>
+              </div>
+            </div>
+
+            <!-- Direct Farmer Earnings -->
+            <div class="kpi-card" id="kpi-earnings-card">
+              <div class="kpi-icon payout" aria-hidden="true">💰</div>
+              <div class="kpi-info">
+                <span class="kpi-value" id="kpi-farmer-earnings">₹14,600</span>
+                <span class="kpi-label" data-i18n="kpi_earnings">Direct Farmer Payout</span>
+                <span class="kpi-badge" data-i18n="kpi_earnings_sub">0% Commission (Zero Fee)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lucknow Agro-Clusters Snapshot -->
+        <div
+          style="background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:20px; padding:24px 28px; margin-top:32px;">
+          <h4
+            style="font-size:1.0rem; font-weight:800; color:#0f2915; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <span data-i18n="clusters_title">📍 5 Active Agricultural Clusters in Lucknow District</span>
+            <span class="hypothetical-badge-sm" data-i18n="clusters_badge">Pilot Clusters</span>
+          </h4>
+          <div style="display:flex; flex-wrap:wrap; gap:10px;">
+            <span class="brand-badge"
+              style="background:#ffffff; color:#0f2915; border:1px solid #cbd5e1; font-size:0.82rem; padding:6px 14px;"
+              data-i18n="cluster_1">🥔 Mohanlalganj • Potato & Green Vegetables</span>
+            <span class="brand-badge"
+              style="background:#ffffff; color:#0f2915; border:1px solid #cbd5e1; font-size:0.82rem; padding:6px 14px;"
+              data-i18n="cluster_2">🥭 Malihabad • Dasheri Mango & Tomato</span>
+            <span class="brand-badge"
+              style="background:#ffffff; color:#0f2915; border:1px solid #cbd5e1; font-size:0.82rem; padding:6px 14px;"
+              data-i18n="cluster_3">🌾 Bakshi Ka Talab • Wheat & Potato</span>
+            <span class="brand-badge"
+              style="background:#ffffff; color:#0f2915; border:1px solid #cbd5e1; font-size:0.82rem; padding:6px 14px;"
+              data-i18n="cluster_4">🧅 Kakori • Onion & Seasonal Vegetables</span>
+            <span class="brand-badge"
+              style="background:#ffffff; color:#0f2915; border:1px solid #cbd5e1; font-size:0.82rem; padding:6px 14px;"
+              data-i18n="cluster_5">🌱 Gosainganj • Grains & Pulses</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------
+         TAB A: FARMER VOICE / CHAT ONBOARDING
+    ----------------------------------------------------------- -->
+    <section id="tab-farmer" class="tab-pane" aria-labelledby="home-main-title">
+      <div class="card-section">
+        <!-- Top Back to Home Navigation Bar -->
+        <div class="page-nav-header">
+          <button type="button" class="btn-back-home" onclick="window.gramBazaar.navigateTo('tab-home')">
+            ← <span data-i18n="back_to_home">Back to Home Dashboard</span>
+          </button>
+          <div class="page-nav-meta">
+            <span class="hypothetical-badge" data-i18n="page_demo_badge">⚠️ Demonstration Pilot Data</span>
+            <span class="page-current-role" data-i18n="current_role_farmer">👨‍🌾 Farmer Assistant Portal</span>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span>🎙️</span>
+              <span data-i18n="farmer_title">Independent Farmer: List Produce via Voice or Text</span>
+            </h2>
+            <p class="section-desc" data-i18n="farmer_desc">
+              Speak or type in your language. Our hybrid parser extracts crop, weight, cluster, and price automatically.
+            </p>
+          </div>
+          <span class="brand-badge" id="parser-badge-type" data-i18n="parser_badge">NLP Parser: Hybrid Local +
+            Gemini</span>
+        </div>
+
+        <div class="voice-chat-layout">
+          <!-- Left: Chat & Voice Console -->
+          <div class="chat-console-box">
+            <div class="chat-history" id="chat-history-box">
+              <!-- Initial Welcome Message -->
+              <div class="chat-bubble bot">
+                <p><strong data-i18n="chat_welcome_title">Greetings Farmer Brother! 🙏</strong></p>
+                <p id="chat-welcome-text" data-i18n="chat_welcome_text">
+                  Click the microphone or type below. Example: "I have 180 kg potato in Mohanlalganj at rate 18 rupees".
+                </p>
+                <div class="chat-bubble-speaker"
+                  onclick="window.gramBazaar.speakText(this.previousElementSibling.innerText)">
+                  🔊 <span data-i18n="listen_audio">Listen Audio</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Listening Indicator -->
+            <div id="listening-indicator"
+              style="display:none; color:#dc2626; font-size:0.85rem; font-weight:700; margin-bottom:10px;">
+              🔴 <span data-i18n="listening_prompt">Listening to voice... Speak crop, quantity, and price</span>
+            </div>
+
+            <!-- Voice & Text Input Controls -->
+            <form id="chat-form" class="voice-input-container"
+              onsubmit="event.preventDefault(); window.gramBazaar.handleChatSubmit();">
+              <button type="button" id="voice-mic-btn" class="voice-mic-btn" title="Click to speak (Web Speech API)">
+                🎤
+              </button>
+              <input type="text" id="chat-input" class="chat-input-text" data-i18n-ph="chat_placeholder"
+                placeholder="e.g. I have 200 kg tomato in Bakshi Ka Talab at rate 22..." autocomplete="off">
+              <button type="submit" id="chat-send-btn" class="chat-send-btn" title="Send message">
+                ➔
+              </button>
+            </form>
+
+            <!-- Quick Example Chips for Hackathon Judges -->
+            <div class="prompt-chips-label"
+              style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+              <span data-i18n="quick_test_chips">⚡ Click to test quick demo phrases:</span>
+              <span class="hypothetical-badge-sm" data-i18n="sim_prompts_badge">⚠️ Simulated Demo Prompts</span>
+            </div>
+            <div class="prompt-chips-container">
+              <button type="button" class="chip-btn" onclick="window.gramBazaar.fillChatChip(1)">
+                <span data-i18n="chip_1">🥔 "List 300 kg potato in Mohanlalganj at 18 rupees"</span>
+              </button>
+              <button type="button" class="chip-btn" onclick="window.gramBazaar.fillChatChip(2)">
+                <span data-i18n="chip_2">🍅 "Malihabad 150 kg tomato 22 rupees per kg"</span>
+              </button>
+              <button type="button" class="chip-btn" onclick="window.gramBazaar.fillChatChip(3)">
+                <span data-i18n="chip_3">🧅 "Kakori 200 kg onion at 25 rupees per kg"</span>
+              </button>
+              <button type="button" class="chip-btn" onclick="window.gramBazaar.fillChatChip(4)">
+                <span data-i18n="chip_4">🌾 "Bakshi Ka Talab 500 kg wheat 28 rupees"</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Real-Time Parsed Listing Preview & Live Farm Feed -->
+          <div>
+            <!-- Real-time Parsed Card -->
+            <div class="parsed-card" id="parsed-card-display">
+              <div class="parsed-card-header">
+                <strong style="color:var(--primary-800); font-size:1.0rem;">
+                  ✨ <span data-i18n="parsed_preview_title">Last Parsed Listing Details</span>
+                </strong>
+                <span class="brand-badge" id="parsed-source-tag" data-i18n="live_verified_tag">Live Verified</span>
+              </div>
+              <div class="parsed-tags-grid">
+                <div class="tag-item">
+                  <div class="tag-label" data-i18n="tag_farmer">Farmer / Provider</div>
+                  <div class="tag-val" id="tag-farmer-name">Ram Prasad Maurya</div>
+                </div>
+                <div class="tag-item">
+                  <div class="tag-label" data-i18n="tag_cluster">Lucknow Cluster</div>
+                  <div class="tag-val" id="tag-cluster">Mohanlalganj</div>
+                </div>
+                <div class="tag-item">
+                  <div class="tag-label" data-i18n="tag_crop">Crop Type</div>
+                  <div class="tag-val" id="tag-crop">Potato</div>
+                </div>
+                <div class="tag-item">
+                  <div class="tag-label" data-i18n="tag_qty">Available Quantity</div>
+                  <div class="tag-val" id="tag-qty">180 kg</div>
+                </div>
+                <div class="tag-item">
+                  <div class="tag-label" data-i18n="tag_price">Expected Price</div>
+                  <div class="tag-val" id="tag-price">₹18.0 / kg</div>
+                </div>
+                <div class="tag-item">
+                  <div class="tag-label" data-i18n="tag_commission">Farmer Commission</div>
+                  <div class="tag-val" id="tag-commission-val" style="color:var(--primary-600);"
+                    data-i18n="zero_commission_val">0% (Zero Fee)</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Farmer Listings Table -->
+            <div
+              style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+              <h3 style="font-size:1.0rem; font-weight:800; color:var(--text-primary);" data-i18n="recent_listings">
+                📋 Live Farmer Inventory Feed
+              </h3>
+              <span class="hypothetical-badge-sm" data-i18n="farmer_sim_badge">⚠️ Simulated Farmer Dataset</span>
+            </div>
+            <div class="table-responsive" style="max-height: 280px; overflow-y:auto;">
+              <table class="ledger-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="tbl_farmer">Farmer</th>
+                    <th data-i18n="tbl_cluster">Cluster</th>
+                    <th data-i18n="tbl_crop">Crop</th>
+                    <th data-i18n="tbl_stock">Stock (kg)</th>
+                    <th data-i18n="tbl_rate">Rate (₹/kg)</th>
+                    <th data-i18n="tbl_type">Channel</th>
+                  </tr>
+                </thead>
+                <tbody id="farmer-live-table-body">
+                  <!-- Populated dynamically via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------
+         TAB B: RURAL SAATHI FACILITATOR PORTAL (OTP VERIFICATION)
+    ----------------------------------------------------------- -->
+    <section id="tab-saathi" class="tab-pane" aria-labelledby="home-main-title">
+      <div class="card-section">
+        <!-- Top Back to Home Navigation Bar -->
+        <div class="page-nav-header">
+          <button type="button" class="btn-back-home" onclick="window.gramBazaar.navigateTo('tab-home')">
+            ← <span data-i18n="back_to_home">Back to Home Dashboard</span>
+          </button>
+          <div class="page-nav-meta">
+            <span class="hypothetical-badge" data-i18n="page_demo_badge">⚠️ Demonstration Pilot Data</span>
+            <span class="page-current-role" data-i18n="current_role_saathi">🤝 Admin & Rural Saathi Facilitator</span>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span>🤝</span>
+              <span data-i18n="saathi_title">Rural Saathi: Zero-Literacy Assisted Onboarding + OTP Consent</span>
+            </h2>
+            <p class="section-desc" data-i18n="saathi_desc">
+              Onboard smartphone-less farmers through local community facilitators (SHG/FPO). Dual-path mobile OTP
+              ensures verified consent & 1.5% facilitator gig incentive.
+            </p>
+          </div>
+          <span class="brand-badge" style="background:#fef08a; color:#854d0e;"
+            data-i18n="saathi_gig_incentive_badge">1.5% Saathi Gig Incentive</span>
+        </div>
+
+        <!-- Assisted Onboarding Form -->
+        <form id="saathi-onboard-form" onsubmit="event.preventDefault(); window.gramBazaar.submitSaathiOnboard();">
+          <div class="saathi-form-grid">
+            <!-- Active Facilitator Selector -->
+            <div class="form-group">
+              <label class="form-label" for="saathi-select" data-i18n="lbl_saathi_selector">Select Rural Saathi
+                Facilitator</label>
+              <select id="saathi-select" class="form-select" required>
+                <!-- Populated / localized dynamically -->
+              </select>
+            </div>
+
+            <!-- Farmer Name -->
+            <div class="form-group">
+              <label class="form-label" for="saathi-farmer-name" data-i18n="lbl_farmer_name">Farmer Full Name</label>
+              <input type="text" id="saathi-farmer-name" class="form-input" data-i18n-ph="ph_farmer_name"
+                placeholder="e.g. Ramesh Verma" required>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+              <label class="form-label" for="saathi-farmer-phone" data-i18n="lbl_farmer_phone">Mobile Number (Consent
+                SMS)</label>
+              <input type="tel" id="saathi-farmer-phone" class="form-input" data-i18n-ph="ph_farmer_phone"
+                placeholder="10-digit mobile number" required>
+            </div>
+
+            <!-- Village Cluster -->
+            <div class="form-group">
+              <label class="form-label" for="saathi-cluster-select" data-i18n="lbl_cluster">Lucknow Cluster /
+                Tehsil</label>
+              <select id="saathi-cluster-select" class="form-select" required>
+                <!-- Localized dynamically -->
+              </select>
+            </div>
+
+            <!-- Crop Name -->
+            <div class="form-group">
+              <label class="form-label" for="saathi-crop-name" data-i18n="lbl_crop_name">Crop Name</label>
+              <input type="text" id="saathi-crop-name" class="form-input" data-i18n-ph="ph_crop_name"
+                placeholder="e.g. Potato, Tomato, Onion, Wheat" required>
+            </div>
+
+            <!-- Quantity & Unit -->
+            <div class="form-group">
+              <label class="form-label" for="saathi-quantity" data-i18n="lbl_quantity">Yield Quantity & Unit</label>
+              <div class="input-with-addon">
+                <input type="number" id="saathi-quantity" class="form-input" data-i18n-ph="ph_quantity"
+                  placeholder="e.g. 250" min="1" step="any" required>
+                <select id="saathi-unit" class="form-select" style="max-width:130px;">
+                  <!-- Localized dynamically -->
+                </select>
+              </div>
+            </div>
+
+            <!-- Expected Price -->
+            <div class="form-group">
+              <label class="form-label" for="saathi-price" data-i18n="lbl_expected_price">Expected Price (₹ per
+                kg)</label>
+              <input type="number" id="saathi-price" class="form-input" placeholder="20" min="1" step="0.5" required>
+            </div>
+          </div>
+
+          <!-- Dual-Path Mobile OTP Consent Section -->
+          <div class="otp-box-section">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+              <h3 style="font-size:1.0rem; font-weight:800; color:var(--primary-900);" data-i18n="otp_section_title">
+                📲 Two-Step Mobile OTP Consent Verification
+              </h3>
+              <span class="hypothetical-badge-sm" data-i18n="sim_otp_demo_badge">⚠️ Simulated Demo Consent OTP:
+                4829</span>
+            </div>
+            <p style="font-size:0.86rem; color:var(--text-secondary); margin-top:4px;" data-i18n="otp_section_desc">
+              Consent SMS is dispatched to the farmer's mobile to guarantee verified identity before any crop is listed.
+            </p>
+
+            <div class="otp-actions-row">
+              <button type="button" id="send-otp-btn" class="btn-secondary"
+                onclick="window.gramBazaar.triggerConsentOTP()">
+                📩 <span data-i18n="btn_send_otp">Send Consent OTP to Farmer</span>
+              </button>
+
+              <div style="display:flex; align-items:center; gap:8px;">
+                <input type="text" id="entered-otp-input" class="form-input" data-i18n-ph="ph_enter_otp"
+                  placeholder="4-Digit OTP" maxlength="6"
+                  style="width:140px; text-align:center; font-weight:800; letter-spacing:2px;">
+                <button type="button" class="btn-secondary" style="padding:10px 14px; font-size:0.8rem;"
+                  onclick="window.gramBazaar.autoFillDemoOTP()" title="Demo shortcut">
+                  <span data-i18n="auto_fill_btn">⚡ Auto-Fill</span>
+                </button>
+              </div>
+
+              <button type="submit" id="saathi-submit-btn" class="btn-primary">
+                <span data-i18n="btn_verify_onboard">✓ Verify OTP & Onboard Farmer</span>
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Saathi Facilitation Track Record & Commission Earnings -->
+        <div style="margin-top:36px;">
+          <h3 style="font-size:1.1rem; font-weight:800; color:var(--primary-900); margin-bottom:14px;"
+            data-i18n="saathi_track_record">
+            🏆 Rural Saathi Performance & Commission Ledger
+          </h3>
+          <div class="table-responsive">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th data-i18n="tbl_saathi_name">Saathi Name</th>
+                  <th data-i18n="tbl_saathi_role">Role / Organization</th>
+                  <th data-i18n="tbl_saathi_cluster">Cluster</th>
+                  <th data-i18n="tbl_assisted_count">Farmers Assisted</th>
+                  <th data-i18n="tbl_earned_comm">Earned Commission (1.5%)</th>
+                  <th data-i18n="tbl_saathi_status">Status</th>
+                </tr>
+              </thead>
+              <tbody id="saathi-summary-table-body">
+                <!-- Dynamically filled -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------
+         TAB C: WHOLESALE BUYER & MICRO-YIELD AGGREGATION ENGINE
+    ----------------------------------------------------------- -->
+    <section id="tab-buyer" class="tab-pane" aria-labelledby="home-main-title">
+      <div class="card-section">
+        <!-- Top Back to Home Navigation Bar -->
+        <div class="page-nav-header">
+          <button type="button" class="btn-back-home" onclick="window.gramBazaar.navigateTo('tab-home')">
+            ← <span data-i18n="back_to_home">Back to Home Dashboard</span>
+          </button>
+          <div class="page-nav-meta">
+            <span class="hypothetical-badge" data-i18n="page_demo_badge">⚠️ Demonstration Pilot Data</span>
+            <span class="page-current-role" data-i18n="current_role_buyer">🛒 Wholesale Buyer Portal</span>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span>🛒</span>
+              <span data-i18n="buyer_title">Wholesale Buyer: Bulk Demand & Micro-Yield Aggregation Engine</span>
+            </h2>
+            <p class="section-desc" data-i18n="buyer_desc">
+              Submit bulk orders. Our algorithm pools micro-yields from smallholder farmers in the nearest Lucknow
+              village cluster.
+            </p>
+          </div>
+          <span class="brand-badge" style="background:#dcfce7; color:var(--primary-800);"
+            data-i18n="buyer_engine_badge">Cluster-Proximity Micro-Yield Engine</span>
+        </div>
+
+        <div class="buyer-grid-layout">
+          <!-- Left: Demand Specification Form & Preset Scenarios -->
+          <div>
+            <form id="buyer-demand-form" onsubmit="event.preventDefault(); window.gramBazaar.executeDemandMatching();">
+              <div class="form-group" style="margin-bottom:16px;">
+                <label class="form-label" for="buyer-crop-select" data-i18n="lbl_buyer_crop">Required Crop</label>
+                <select id="buyer-crop-select" class="form-select" required>
+                  <!-- Localized dynamically -->
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom:16px;">
+                <label class="form-label" for="buyer-qty-input" data-i18n="lbl_buyer_volume">Total Volume Needed
+                  (kg)</label>
+                <input type="number" id="buyer-qty-input" class="form-input" value="500" min="10" step="10" required>
+              </div>
+
+              <div class="form-group" style="margin-bottom:16px;">
+                <label class="form-label" for="buyer-cluster-filter" data-i18n="lbl_buyer_cluster">Cluster
+                  Preference</label>
+                <select id="buyer-cluster-filter" class="form-select">
+                  <!-- Localized dynamically -->
+                </select>
+              </div>
+
+              <div class="form-group" style="margin-bottom:20px;">
+                <label class="form-label" for="buyer-max-budget" data-i18n="lbl_buyer_budget">Max Budget (₹ per
+                  kg)</label>
+                <input type="number" id="buyer-max-budget" class="form-input" value="30" min="5" step="0.5">
+              </div>
+
+              <button type="submit" id="run-matching-btn" class="btn-primary"
+                style="width:100%; justify-content:center;">
+                <span data-i18n="btn_run_engine">⚡ Run Micro-Yield Aggregator</span>
+              </button>
+            </form>
+
+            <!-- Quick Demo Presets for Hackathon Judges -->
+            <div class="scenario-presets" style="margin-top:24px;">
+              <div class="prompt-chips-label"
+                style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                <span data-i18n="preset_scenarios">⚡ Quick Demo Scenarios for Judges:</span>
+                <span class="hypothetical-badge-sm" data-i18n="sim_demand_badge">⚠️ Simulated Bulk Demand</span>
+              </div>
+              <button type="button" class="scenario-btn"
+                onclick="window.gramBazaar.triggerPresetScenario('potato', 500, 'Mohanlalganj')">
+                <span id="scenario-1-content">🥔 <strong>500 kg Potato (Mohanlalganj)</strong><br><small>Exact match of
+                    3 local smallholders</small></span>
+                <span>➔</span>
+              </button>
+              <button type="button" class="scenario-btn"
+                onclick="window.gramBazaar.triggerPresetScenario('tomato', 400, 'All Lucknow')">
+                <span id="scenario-2-content">🍅 <strong>350 kg Tomato (Lucknow Hub)</strong><br><small>BKT + Malihabad
+                    + Kakori Pooling</small></span>
+                <span>➔</span>
+              </button>
+              <button type="button" class="scenario-btn"
+                onclick="window.gramBazaar.triggerPresetScenario('onion', 1500, 'All Lucknow')">
+                <span id="scenario-3-content">🧅 <strong>1,500 kg High Demand</strong><br><small>Graceful Partial Match
+                    (Available Stock)</small></span>
+                <span>➔</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: Aggregation Visualizer, Matched Batches & Financial Breakdown -->
+          <div>
+            <div class="matching-visualizer-box">
+              <div class="meter-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span id="matching-status-badge" data-i18n="matching_status_badge">⚡ Aggregation Results</span>
+                  <span class="hypothetical-badge-sm" data-i18n="sim_aggregator_badge">⚠️ Simulated Aggregator
+                    Model</span>
+                </div>
+                <span id="meter-percentage-text" style="color:var(--primary-700); font-weight:800;">0%</span>
+              </div>
+              <div class="meter-track">
+                <div id="meter-fill-bar" class="meter-fill"></div>
+              </div>
+
+              <div id="matching-summary-banner"
+                style="margin: 16px 0; padding:12px 16px; background:#f0fdf4; border-radius:var(--radius-sm); font-size:0.9rem; color:var(--primary-900); font-weight:600;"
+                data-i18n="matching_banner_default">
+                Search demand using the form above or click a quick demo scenario.
+              </div>
+
+              <!-- List of Contributed Micro-Yield Farmers -->
+              <h4 style="font-size:0.9rem; font-weight:800; color:var(--text-secondary); margin-bottom:10px;"
+                data-i18n="matched_farmers_title">
+                👥 Aggregated Smallholder Micro-Yields:
+              </h4>
+              <div class="matched-farmers-list" id="matched-farmers-list">
+                <!-- Dynamically populated -->
+                <div style="text-align:center; padding:28px; color:var(--text-muted); font-size:0.9rem;"
+                  data-i18n="no_batch_selected">
+                  No active batch selected.
+                </div>
+              </div>
+
+              <!-- Transparent Financial Split Calculator -->
+              <div class="financial-summary-card" id="financial-summary-card" style="display:none;">
+                <div class="fin-row">
+                  <span data-i18n="fin_farmer_payout">Direct Farmer Payout (0% Commission):</span>
+                  <strong class="fin-highlight" id="fin-farmer-total">₹0.00</strong>
+                </div>
+                <div class="fin-row">
+                  <span data-i18n="fin_saathi_incentive">Rural Saathi Incentive (1.5% from platform fee):</span>
+                  <span id="fin-saathi-total">₹0.00</span>
+                </div>
+                <div class="fin-row">
+                  <span data-i18n="fin_platform_fee">Buyer Convenience Platform Fee (3%):</span>
+                  <span id="fin-platform-fee">₹0.00</span>
+                </div>
+                <div class="fin-row">
+                  <span data-i18n="fin_buyer_total">Buyer Total Invoice:</span>
+                  <span id="fin-buyer-invoice">₹0.00</span>
+                </div>
+              </div>
+
+              <!-- Confirmation CTA / Partial Handling -->
+              <div id="matching-action-buttons" style="display:none; gap:12px; flex-wrap:wrap;">
+                <button type="button" id="confirm-dispatch-btn" class="btn-primary" style="flex:1;"
+                  onclick="window.gramBazaar.confirmCurrentOrder()">
+                  <span data-i18n="btn_confirm_dispatch">🚚 Confirm Order & Shared Pickup Route</span>
+                </button>
+                <button type="button" id="save-open-demand-btn" class="btn-secondary" style="display:none;"
+                  onclick="window.gramBazaar.saveOpenDemand()">
+                  <span data-i18n="btn_open_demand">📌 Save Remaining as Open Demand</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------
+         TAB D: LOGISTICS COORDINATOR & IMMUTABLE TRANSPARENT LEDGER
+    ----------------------------------------------------------- -->
+    <section id="tab-logistics" class="tab-pane" aria-labelledby="home-main-title">
+      <div class="card-section">
+        <!-- Top Back to Home Navigation Bar -->
+        <div class="page-nav-header">
+          <button type="button" class="btn-back-home" onclick="window.gramBazaar.navigateTo('tab-home')">
+            ← <span data-i18n="back_to_home">Back to Home Dashboard</span>
+          </button>
+          <div class="page-nav-meta">
+            <span class="hypothetical-badge" data-i18n="page_demo_badge">⚠️ Demonstration Pilot Data</span>
+            <span class="page-current-role" data-i18n="current_role_logistics">🚚 Transporter & Audit Ledger</span>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <div>
+            <h2 class="section-title">
+              <span>🚚</span>
+              <span data-i18n="logistics_title">Shared Mini-Truck Routing & Transparent Immutable Ledger</span>
+            </h2>
+            <p class="section-desc" data-i18n="logistics_desc">
+              Consolidated multi-farmer pickups save ~60% transport cost compared to individual tempos. Every payout is
+              verified by SHA-256 cryptographic proof.
+            </p>
+          </div>
+          <span class="brand-badge" style="background:#e0f2fe; color:#0369a1;" data-i18n="logistics_badge">Zero Farmer
+            Commission | SHA-256 Audit</span>
+        </div>
+
+        <!-- Logistics Route Timeline & Cost Savings Grid -->
+        <div class="logistics-card-grid">
+          <!-- Left: Shared Mini-Truck Route Timeline -->
+          <div class="route-schematic-box">
+            <div
+              style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px;">
+              <h3 style="font-size:1.05rem; font-weight:800; color:var(--primary-900);" data-i18n="truck_route_title">
+                🗺️ Shared Pickup Route & Driver Details
+              </h3>
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span class="hypothetical-badge-sm" data-i18n="sim_vehicle_badge">⚠️ Simulated Vehicle Data</span>
+                <span class="brand-badge" id="driver-badge">UP 32 BN 8412</span>
+              </div>
+            </div>
+
+            <div id="driver-details-box"
+              style="background:#f8fafc; padding:12px 16px; border-radius:var(--radius-sm); margin-bottom:16px; font-size:0.86rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px; border:1px solid #e2e8f0;">
+              <span id="logistics-driver-text"><strong>Driver:</strong> Pappu Yadav (+91 94150 99823)</span>
+              <span id="logistics-vehicle-text"><strong>Vehicle:</strong> Mahindra Bolero Pickup</span>
+            </div>
+
+            <!-- Timeline Stops Container -->
+            <div id="route-timeline-container">
+              <!-- Dynamically populated stops -->
+            </div>
+          </div>
+
+          <!-- Right: Transport Cost Savings & Environmental Impact -->
+          <div class="savings-metric-box">
+            <div>
+              <span class="brand-badge" style="background:rgba(234,179,8,0.25); color:var(--accent-gold-light);"
+                data-i18n="logistics_engine_badge">
+                Logistics Optimization Engine
+              </span>
+              <h3 style="font-size:1.25rem; font-weight:800; margin-top:10px;" data-i18n="pooled_savings_title">
+                Total Transport Cost Savings
+              </h3>
+              <p style="font-size:0.85rem; color:#dcfce7; margin-top:4px;" data-i18n="pooled_savings_desc">
+                Comparing multiple individual farmer tempos vs our consolidated mini-truck pickup:
+              </p>
+
+              <div class="savings-highlight-num" id="metric-saved-rupees">₹1,950</div>
+              <div style="font-size:0.9rem; color:#fef08a; font-weight:700;" id="metric-saved-percent"
+                data-i18n="savings_stat_line">
+                59.1% freight savings + 14.8 kg CO₂ reduction 🌱
+              </div>
+            </div>
+
+            <div
+              style="background:rgba(255,255,255,0.1); border-radius:var(--radius-sm); padding:14px; margin-top:16px; font-size:0.84rem;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <span data-i18n="indiv_tempo_cost">Individual Tempos Estimated Cost:</span>
+                <span id="metric-indiv-cost">₹3,300</span>
+              </div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                <span data-i18n="pooled_truck_cost">Gram Bazaar Pooled Pickup:</span>
+                <strong style="color:var(--accent-gold);" id="metric-pooled-cost">₹1,350</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span data-i18n="destination_hub">Final Terminal:</span>
+                <span id="destination-hub-val" data-i18n="destination_hub_name">Dubagga / Sitapur Road Wholesale
+                  Mandi</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Immutable Transparent Financial Ledger Table -->
+        <div style="margin-top:28px;">
+          <div
+            style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <h3 style="font-size:1.15rem; font-weight:800; color:var(--primary-900);" data-i18n="ledger_table_title">
+                📜 100% Transparent Immutable Audit Ledger
+              </h3>
+              <span class="hypothetical-badge-sm" data-i18n="crypto_test_badge">🔒 Cryptographic SHA-256 Test
+                Hashes</span>
+            </div>
+            <span style="font-size:0.78rem; color:var(--text-muted);" data-i18n="audit_note">
+              🔒 Every transaction is secured with an immutable SHA-256 hash. Zero commission deducted from farmers.
+            </span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="ledger-table">
+              <thead>
+                <tr>
+                  <th data-i18n="th_txn_id">Order ID & Time</th>
+                  <th data-i18n="th_buyer">Wholesale Buyer</th>
+                  <th data-i18n="th_crop_vol">Crop & Weight</th>
+                  <th data-i18n="th_farmer_payout">Farmer Payout (0% fee)</th>
+                  <th data-i18n="th_saathi_cut">Saathi Commission (1.5%)</th>
+                  <th data-i18n="th_hash">SHA-256 Hash</th>
+                  <th data-i18n="th_action">Audit</th>
+                </tr>
+              </thead>
+              <tbody id="immutable-ledger-body">
+                <!-- Dynamically filled with pre-seeded & live transactions -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       SIMULATED SMS MODAL TOAST (FOR LIVE JUDGE DEMONSTRATIONS)
+  ============================================================ -->
+  <div id="simulated-sms-modal" class="simulated-sms-modal" role="alert" aria-live="assertive">
+    <div class="sms-header">
+      <span data-i18n="sms_modal_header">📱 Simulated Farmer SMS (Live Consent Demo)</span>
+      <button type="button" onclick="document.getElementById('simulated-sms-modal').classList.remove('show')"
+        style="background:none;border:none;color:#fff;cursor:pointer;font-size:16px;">✕</button>
+    </div>
+    <div class="sms-body" id="sms-body-content">
+      📩 [Simulated SMS to +91 98380 12345]: Your Gram Bazaar listing consent OTP is: 4829. 0% farmer commission
+      guaranteed.
+    </div>
+    <div style="display:flex; justify-content:flex-end;">
+      <button type="button" class="sms-copy-btn" onclick="window.gramBazaar.autoFillDemoOTP()">
+        <span data-i18n="sms_copy_autofill">⚡ Auto-Fill OTP</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       AUDIT RECEIPT & CRYPTOGRAPHIC VERIFICATION MODAL
+  ============================================================ -->
+  <div id="audit-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-txn-title">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-txn-title" data-i18n="audit_modal_title">Audit Receipt & SHA-256 Cryptographic
+          Verification</h3>
+        <button type="button" class="modal-close-btn" onclick="window.gramBazaar.closeAuditModal()"
+          aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body-content">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer-wrap" role="contentinfo">
+    <div class="footer-content">
+      <div>
+        <strong data-i18n="brand_name">Gram Bazaar</strong> — <span data-i18n="footer_text_1">Lucknow District
+          Micro-Yield Agritech Pilot.</span><br>
+        <small data-i18n="footer_text_2">Built with Python Flask, Vanilla JS/CSS PWA, and Zero-Commission Fair Trade
+          Architecture.</small>
+      </div>
+      <div style="display:flex; gap:12px; align-items:center;">
+        <button type="button" class="reset-btn" onclick="window.gramBazaar.resetDatabase()">
+          ↺ <span data-i18n="reset_btn">Reset Demo Data</span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Core JavaScript Logic -->
+  <script src="script.js?v=7.2"></script>
+</body>
+
+</html>

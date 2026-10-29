@@ -1,0 +1,24 @@
+{
+  "name": "Gram Bazaar | ग्राम बाज़ार (Lucknow Pilot)",
+  "short_name": "GramBazaar",
+  "description": "Low-connectivity, multilingual micro-yield aggregation platform connecting smallholder farmers with wholesale buyers in Lucknow.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f8faf5",
+  "theme_color": "#15803d",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
