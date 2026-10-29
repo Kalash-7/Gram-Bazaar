@@ -51,7 +51,7 @@ gram-bazaar/
 1. Copy or edit the `.env` file in the project root:
    ```env
    GEMINI_API_KEY=your_gemini_api_key_here
-   GEMINI_MODEL=gemini-1.5-flash
+   GEMINI_MODEL=gemini-3.5-flash
    ```
    *(Get a free API key at [Google AI Studio](https://aistudio.google.com/app/apikey))*
 2. Verify your Gemini key connectivity anytime:
@@ -66,21 +66,6 @@ Open **[http://127.0.0.1:5000](http://127.0.0.1:5000)** in Google Chrome or any 
 
 ---
 
-## 🎯 Live Demonstration Flow for Hackathon Judges
-
-| Step | Feature | What to Demonstrate |
-| :--- | :--- | :--- |
-| **1. Header & KPIs** | Live Pilot Metrics | Point out the 4 KPI counters: 12 Active Smallholders, 2,820 kg Available Stock, 2 Fulfilled Pooled Orders, and Direct Farmer Earnings (0% Platform Fee). |
-| **2. Language Toggle** | Hindi ⇋ English | Click the `हिंदी / EN` button in the top right to show instant dynamic translation across all tabs and labels. |
-| **3. Farmer Assistant** | Voice & NLP Chat | In Tab 1, click the quick prompt chip: *"Mere paas Mohanlalganj mein 180 kg aaloo hai, rate 18 rupaye"*. Show how the parser extracts Crop (Potato), Weight (180 kg), Cluster (Mohanlalganj), and Price (₹18), confirms with audio speech, and adds it to the live inventory feed. |
-| **4. Rural Saathi** | Assisted Onboarding + OTP | In Tab 2, select *Meena Devi*, click **"Send Consent OTP to Farmer"**, observe the simulated SMS modal toast (`4829`), click **"Auto-Fill"**, and submit. Show the verified checkmark and Saathi commission ledger. |
-| **5. Wholesale Matching** | Micro-Yield Aggregator | In Tab 3, click the preset **"500 kg आलू (Mohanlalganj)"**. Show the progress meter bar filling to 100%, aggregating 3 distinct smallholder farmers, displaying geographic cluster proximity, and breaking down the transparent financial split. |
-| **6. Shared Logistics** | Mini-Truck Routing | Click **"Confirm Order & Shared Route"**; watch it navigate to Tab 4 showing the scheduled *Mahindra Bolero Pickup* route, driver *Pappu Yadav*, and **₹1,950 transport savings (59.1% saved)**. |
-| **7. Immutable Ledger** | Cryptographic Audit | Click **"Audit"** on any transaction in the ledger table to view the full cryptographic **SHA-256 hash**, proving 0% deductions from farmers. |
-| **8. Offline Simulator** | Low-Connectivity Mode | Click the green **"Online (Live)"** badge in the header to switch to **"Offline Simulator"**. Actions are queued in device `localStorage`. Switch back and click **"Sync Now"** to drain the queue. |
-| **9. Reset Demo Data** | 1-Click Fresh Start | Click the **"↺ Reset Demo Data"** button in the footer to restore `database.json` to its clean initial state before the next judge arrives. |
-
----
 
 ## 🏛️ REST API Documentation
 
@@ -94,6 +79,4 @@ Open **[http://127.0.0.1:5000](http://127.0.0.1:5000)** in Google Chrome or any 
 
 ---
 
-## 👥 Hackathon Team Presentation Tips
-- Emphasize that **no React or complex build tools** are needed — standard Vanilla HTML5/CSS3/JS with Python Flask makes the prototype extremely lightweight, accessible, and fast to run on rural low-bandwidth devices.
-- Highlight the **0% farmer commission** model: traditional commission agents (Arhatiyas) charge 6–10% from farmers; Gram Bazaar charges 0% to farmers and takes a modest 3% buyer convenience fee, from which 1.5% funds rural grassroots employment for Rural Saathis.
+
